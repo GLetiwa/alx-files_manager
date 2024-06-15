@@ -1,15 +1,14 @@
-// controllers/AppController.js
-import redisClient from '../utils/redis';
-import dbClient from '../utils/db';
+import RedisClient from '../utils/redis';
+import MongoClient from '../utils/db';
 
 class AppController {
     static getStatus(req, res) {
-        res.status(200).json({ redis: redisClient.isAlive(), db: dbClient.isAlive() });
+        res.status(200).json({ redis: RedisClient.isAlive(), db: MongoClient.isAlive() });
     }
 
     static async getStats(req, res) {
-        const users = await dbClient.nbUsers();
-        const files = await dbClient.nbFiles();
+        const users = await MongoClient.nbUsers();
+        const files = await MongoClient.nbFiles();
         res.status(200).json({ users, files });
     }
 }
