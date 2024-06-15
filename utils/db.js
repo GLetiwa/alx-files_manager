@@ -4,8 +4,7 @@ import Collection from 'mongodb/lib/collection';
 import envLoader from './env_loader';
 
 class DBClient {
-
-   constructor() {
+  constructor() {
     envLoader();
     const host = process.env.DB_HOST || 'localhost';
     const port = process.env.DB_PORT || 27017;
