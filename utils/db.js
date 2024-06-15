@@ -1,6 +1,4 @@
 import mongodb from 'mongodb';
-// eslint-disable-next-line no-unused-vars
-import Collection from 'mongodb/lib/collection';
 import envLoader from './env_loader';
 
 class DBClient {
@@ -25,14 +23,6 @@ class DBClient {
 
   async nbFiles() {
     return this.client.db().collection('files').countDocuments();
-  }
-
-  async usersCollection() {
-    return this.client.db().collection('users');
-  }
-
-  async filesCollection() {
-    return this.client.db().collection('files');
   }
 }
 
