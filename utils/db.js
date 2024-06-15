@@ -1,48 +1,40 @@
-// utils/db.js
-
-const mongoose = require('mongoose');
-
-const dbHost = process.env.DB_HOST || 'localhost';
-const dbPort = process.env.DB_PORT || 27017;
-const dbName = process.env.DB_DATABASE || 'files_manager';
+import mongodb from 'mongodb';
+// eslint-disable-next-line no-unused-vars
+import Collection from 'mongodb/lib/collection';
+import envLoader from './env_loader';
 
 class DBClient {
   constructor() {
-    const uri = `mongodb://${dbHost}:${dbPort}/${dbName}`;
-    this.client = mongoose.createConnection(uri, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    envLoader();
+    const host = process.env.DB_HOST || 'localhost';
+    const port = process.env.DB_PORT || 27017;
+    const database = process.env.DB_DATABASE || 'files_manager';
+    const dbURL = `mongodb://${host}:${port}/${database}`;
 
-    this.client.on('error', (err) => {
-      console.error('MongoDB connection error:', err);
-    });
+    this.client = new mongodb.MongoClient(dbURL, { useUnifiedTopology: true });
+    this.client.connect();
   }
 
   isAlive() {
-    return this.client.readyState === 1;
+    return this.client.isConnected();
   }
 
   async nbUsers() {
-    try {
-      const usersCollection = this.client.collection('users');
-      return await usersCollection.countDocuments();
-    } catch (err) {
-      console.error('Error counting users:', err);
-      return 0;
-    }
+    return this.client.db().collection('users').countDocuments();
   }
 
   async nbFiles() {
-    try {
-      const filesCollection = this.client.collection('files');
-      return await filesCollection.countDocuments();
-    } catch (err) {
-      console.error('Error counting files:', err);
-      return 0;
-    }
+    return this.client.db().collection('files').countDocuments();
+  }
+
+  async usersCollection() {
+    return this.client.db().collection('users');
+  }
+
+  async filesCollection() {
+    return this.client.db().collection('files');
   }
 }
 
-const dbClient = new DBClient();
-module.exports = dbClient;
+export const dbClient = new DBClient();
+export default dbClient;
