@@ -1,0 +1,7 @@
+*main.js
+package.json
+.eslintrc.js
+babel.config.js
+.babelrc
+.env
+node_modules
